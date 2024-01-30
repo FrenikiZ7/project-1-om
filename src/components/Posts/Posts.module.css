@@ -1,7 +1,7 @@
 .container {
   min-height: 100vh;
   max-width: 1300px;
-  background: #eee;
+  background: #F1F2F3;
   margin: 30px auto;
 }
 
@@ -15,5 +15,17 @@
 .posts {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-  gap: 30px; 
+  gap: 30px;
+}
+
+.loadingContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.searchContainer {
+  width: 80%;
+  margin: 30px auto;
+  padding-top: 10px;
 }

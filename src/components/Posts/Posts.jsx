@@ -5,6 +5,7 @@ import styles from './Posts.module.css'
 import PostCard from "./PostCard"
 import Button from "../Button/Button"
 import Loading from "../Loading/Loading"
+import Search from "../Search/Search"
 
 
 function Posts() {
@@ -15,7 +16,9 @@ function Posts() {
 
   
   const [startPage, setStartPage] = useState(0)
-  const [endPage, setEndPage] = useState(4)
+  const [endPage, setEndPage] = useState(8)
+
+  const [searchValue, setSearchValue] = useState()
  
 
   useEffect(() => {
@@ -58,57 +61,82 @@ function Posts() {
 
   }, [])
 
-  const loadMorePosts = (e) => {
-   
-    e.preventDefault()
 
-    console.log(`antes do state alterar o startpage é ${startPage} e o endpage é ${endPage}`)
 
-    setStartPage(startPage + 4)
-    setEndPage(endPage + 4)
-
-    console.log(` após o state alterar o startpage é ${startPage} e o endpage é ${endPage}`)
-    console.log('RUN FINALIZADA')
+  function loadMorePosts(start, end) {
     
-    const morePosts = allPosts.slice(startPage, endPage)
-    posts.push(...morePosts)
+    start = startPage + 8
+    end = endPage + 8
+
+    setStartPage(prevState => prevState + 8)
+    setEndPage(prevState => prevState + 8)
+    
+    const morePosts = allPosts.slice(start, end)
+    setPosts([...posts, ...morePosts])
     
   }
 
+  const noMorePosts = posts.length >= allPosts.length
 
+
+
+
+  function handleChange(e) {
+    setSearchValue(e.target.value)
+  }
+
+
+  const filteredPosts = !!searchValue ? 
+    allPosts.filter(post => {
+      return post.title.toLowerCase().includes(searchValue.toLowerCase())
+    })
+  :
+    posts;
+
+    
 
   return (
 
     <section className={styles.container}>
+  
+      <div className={styles.searchContainer}>
+        <Search searchValue={searchValue} handleChange={handleChange}/>
+      </div>
 
-      <div className={styles.posts}>
+         { filteredPosts.length > 0 && photos.length > 0 ? ( 
+            
+           <div className={styles.posts}> 
 
-         {
-          posts.length > 0 && photos.length > 0 ? (
+              {filteredPosts.map(post => (
 
-            posts.map(post => (
+              
+                <PostCard
+                title={post.title} 
+                key={post.id}
+                id={post.id} 
+                body={post.body}
+                photos={photos}
+                />
+              
 
-              <PostCard
-               title={post.title} 
-               key={post.id}
-               id={post.id} 
-               body={post.body}
-               photos={photos}
-              />
-                
-            ))
+              ))}
+
+           </div>
 
           ): 
           
-          <Loading/>
-
-
-         }
+            
+           <div className={styles.loadingContainer}>
+             <Loading searchValue={searchValue}/>
+           </div>
+            
+          
+          }
       
-      </div>
+     
 
       <div className={styles.button_container}>
-        <Button disabled={false} text="Load More Posts" onClick={loadMorePosts}/>
+        {filteredPosts.length > 0 && !searchValue && <Button disabled={noMorePosts} text="Load More Posts" onClick={loadMorePosts}/>}
       </div>
 
 

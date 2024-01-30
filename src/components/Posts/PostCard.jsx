@@ -10,7 +10,7 @@ function PostCard({title, id, body, photos}) {
 
     <div className={styles.post_content}>
         
-       <h2>{title} {id}</h2>
+       <h2>{id} - {title}</h2>
        <p>{body}</p>
 
     </div>
